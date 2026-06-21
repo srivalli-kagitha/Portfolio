@@ -1,0 +1,73 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 40px;
+  background: black;
+  color: rgb(19, 143, 143);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* LOGO */
+.logo {
+  font-size: 30px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+/* NAV LINKS */
+.nav-links {
+  display: flex;
+  gap: 15px;
+  list-style: none;
+  align-items: center;
+}
+
+/* LINK STYLE */
+.nav-links li a {
+  color: rgb(21, 174, 191);
+  text-decoration: none;
+  font-size: 20px;   /* reduced from 30px (was too big) */
+  font-weight: 300;
+  position: relative;
+  transition: all 0.3s ease;
+  padding: 6px 10px;
+  border-radius: 6px;
+}
+
+/* HOVER EFFECT */
+.nav-links li a:hover {
+  color: #38c8f8;
+  background: rgba(56, 189, 248, 0.1);
+  transform: translateY(-2px);
+}
+
+/* ACTIVE UNDERLINE EFFECT */
+.nav-links li a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  width: 0%;
+  height: 2px;
+  background: #38bdf8;
+  transition: 0.3s ease;
+}
+
+.nav-links li a:hover::after {
+  width: 100%;
+}
+
+/* ICON FIX */
+.nav-links svg {
+  font-size: 13px;
+  transition: 0.3s ease;
+}
+
+.nav-links li a:hover svg {
+  transform: scale(1.2);
+}

@@ -1,0 +1,125 @@
+.about {
+  background: #090909;
+  color: white;
+  padding: 40px 8%;
+}
+
+.section-title {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.section-title h2 {
+  font-size: 45px;
+  color: white;
+  margin-bottom: 10px;
+}
+
+.section-title p {
+  color: #999;
+  margin: 0;
+  font-size: 18px;
+}
+
+.about-container {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+/* TEXT SECTION */
+.about-text {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.about-text h3 {
+  margin: 0 0 20px 0;
+  font-size: 32px;
+}
+
+.about-text p {
+  color: #b5b5b5;
+  font-size: 20px;
+  line-height: 1.8;
+  margin-bottom: 20px;
+}
+
+/* CARDS ROW */
+.about-cards {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+/* CARD STYLE */
+.card {
+  width: 200px;
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
+  padding: 20px;
+  border-radius: 25px;
+  text-align: center;
+
+  /* Glass Morphism */
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+
+  border: 1px solid rgba(255, 255, 255, 0.15);
+
+  box-shadow:
+    0 8px 32px rgba(0, 229, 255, 0.08),
+    inset 0 0 15px rgba(255, 255, 255, 0.03);
+
+  transition: all 0.4s ease;
+}
+.card:hover {
+  transform: translateY(-10px) scale(1.03);
+
+  border-color: #00e5ff;
+
+  box-shadow:
+    0 0 10px #00e5ff,
+    0 0 20px #00e5ff,
+    0 0 40px rgba(0, 229, 255, 0.6),
+    0 0 60px rgba(0, 229, 255, 0.4);
+
+  background: rgba(0, 229, 255, 0.08);
+}
+.icon {
+  font-size: 40px;
+  color: #00e5ff;
+  margin-bottom: 15px;
+  transition: all 0.4s ease;
+}
+
+.card:hover .icon {
+  transform: scale(1.15);
+  text-shadow:
+    0 0 10px #00e5ff,
+    0 0 20px #00e5ff,
+    0 0 35px #00e5ff;
+}
+
+.card h4 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+.card h4 {
+  font-size: 24px;
+  margin-bottom: 10px;
+  transition: all 0.4s ease;
+}
+
+.card:hover h4 {
+  color: #00e5ff;
+  text-shadow:
+    0 0 10px #00e5ff,
+    0 0 20px #00e5ff;
+}
+.card p {
+  color: #b5b5b5;
+  margin: 0;
+  font-size: 16px;
+}

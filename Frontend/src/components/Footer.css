@@ -1,0 +1,19 @@
+.footer {
+  background: #090909;
+  color: white;
+  padding: 5px 8%;
+  text-align: center;
+}
+
+.footer h2 {
+  font-size: 35px;
+  margin-bottom: 5px;
+}
+
+.footer span {
+  color: #00e5ff;
+}
+
+.footer p {
+  color: #999;
+}

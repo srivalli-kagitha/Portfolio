@@ -1,0 +1,162 @@
+.contact {
+  background: #000;
+  color: rgb(255, 255, 255);
+  padding: 50px 8%;
+  min-height: 80vh;
+}
+
+.section-title {
+  text-align: center;
+  margin-bottom: 70px;
+}
+
+.section-title h2 {
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.line {
+  width: 100px;
+  height: 4px;
+  background: #00e5ff;
+  margin: 20px auto;
+  border-radius: 10px;
+}
+
+/* Contact Box */
+
+.contact-container {
+  width: 700px;
+  display: flex;
+  align-self: center;
+  justify-content: center;
+  align-items: center;
+  gap: 0px;
+margin: 0 auto;
+  background: #050505;
+  border: 1px solid rgba(0, 229, 255, 0.15);
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 0 20px rgba(0, 229, 255, 0.08);
+}
+
+.contact-form input,
+.contact-form textarea {
+  width: 100%;
+}
+/* Left Side */
+
+.contact-info {
+  flex: 0.5;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.info-card {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.icon-box {
+  width: 55px;
+  height: 55px;
+  background: rgba(0, 229, 255, 0.08);
+  border-radius: 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #00e5ff;
+  font-size: 1.5rem;
+}
+
+.info-card span {
+  font-size: 1.3rem;
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+/* Right Side */
+
+.contact-form {
+  flex: 1.5;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  align-items: center;
+}
+
+.contact-form input,
+.contact-form textarea {
+  width: 70%;
+  background: #111;
+  border: 1px solid #222;
+  border-radius: 14px;
+  padding: 10px 14px;
+  color: rgb(249, 251, 252);
+  font-size: 1.1rem;
+  outline: none;
+  transition: 0.3s;
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+  border: 2px solid #00e5ff;
+  box-shadow: 0 0 20px rgba(0, 229, 255, 0.2);
+}
+
+.contact-form textarea {
+  resize: none;
+}
+
+/* Button */
+
+.contact-form button {
+  width: 50%;
+  border: none;
+  padding: 12px;
+  border-radius: 15px;
+  background: #00e5ff;
+  color: black;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+
+  align-self: center;
+  transition: 0.3s;
+}
+
+.contact-form button:hover {
+  background: #00c8e0;
+  transform: translateY(-3px);
+}
+
+/* Responsive */
+
+@media (max-width: 300px) {
+  .contact-container {
+    flex-direction: column;
+    gap: 40px;
+    padding: 25px;
+  }
+
+  .section-title h2 {
+    font-size: 2.3rem;
+  }
+
+  .info-card span {
+    font-size: 1.1rem;
+  }
+
+  .contact-form input,
+  .contact-form textarea,
+  .contact-form button {
+    width: 50%;
+  }
+}
