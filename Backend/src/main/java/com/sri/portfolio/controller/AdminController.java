@@ -10,7 +10,6 @@ import com.sri.portfolio.service.AdminService;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = "*")
 public class AdminController {
 
     private final AdminService service;

@@ -9,7 +9,6 @@ import com.sri.portfolio.service.ContactService;
 
 @RestController
 @RequestMapping("/api/contact")
-@CrossOrigin(origins = "*")
 public class ContactController {
 
     private final ContactService service;

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { getProfile, updateProfile, uploadResume } from "../services/profileService";
+import api from "../services/api";
 import "./admin.css";
 
 function Dashboard() {
@@ -40,6 +41,30 @@ function Dashboard() {
       ...profile,
       [e.target.name]: e.target.value,
     });
+  };
+
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    const formData = new FormData();
+    formData.append("file", file);
+    
+    try {
+      setMsg("Uploading image...");
+      const res = await api.post("/api/upload/image", formData, {
+        headers: { "Content-Type": "multipart/form-data" }
+      });
+      if (res.data && res.data.url) {
+        setProfile(prev => ({ ...prev, image: res.data.url }));
+        setMsg("Profile image uploaded successfully!");
+      } else {
+        setMsg("Upload returned empty response.");
+      }
+    } catch (err) {
+      console.error(err);
+      setMsg("Profile image upload failed.");
+    }
   };
 
   const handleProfileSubmit = async (e) => {
@@ -128,7 +153,14 @@ function Dashboard() {
           </div>
 
           <div className="form-group">
-            <label>Profile Image Filepath / URL</label>
+            <label>Upload Profile Image File</label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageUpload}
+              style={{ marginBottom: "8px" }}
+            />
+            <label>Or Profile Image Filepath / URL</label>
             <input
               type="text"
               name="image"

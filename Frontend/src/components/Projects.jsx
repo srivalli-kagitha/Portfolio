@@ -29,7 +29,11 @@ function Projects() {
         {projects.map((project) => (
           <div className="project-card" key={project.id}>
             <img
-              src={project.image?.startsWith("http") || project.image?.startsWith("data:") ? project.image : `/${project.image || 'placeholder.jpg'}`}
+              src={project.image?.startsWith("http") || project.image?.startsWith("data:") 
+                ? project.image 
+                : (project.image?.startsWith("project-images") 
+                    ? `${import.meta.env.VITE_API_BASE_URL || "http://localhost:9002"}/${project.image}` 
+                    : `/${project.image || 'placeholder.jpg'}`)}
               alt={project.title}
               className="project-image"
               onError={(e) => {

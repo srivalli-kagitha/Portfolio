@@ -10,7 +10,6 @@ import com.sri.portfolio.service.ProjectService;
 
 @RestController
 @RequestMapping("/api/projects")
-@CrossOrigin(origins = "*")
 public class ProjectController {
 
     @Autowired

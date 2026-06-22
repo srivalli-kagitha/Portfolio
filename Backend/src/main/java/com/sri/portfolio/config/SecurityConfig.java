@@ -20,6 +20,9 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthFilter;
 
+    @org.springframework.beans.factory.annotation.Value("${cors.allowed-origins:http://localhost:5173,http://localhost:5174,http://localhost:3000}")
+    private String allowedOrigins;
+
     public SecurityConfig(JwtAuthenticationFilter jwtAuthFilter) {
         this.jwtAuthFilter = jwtAuthFilter;
     }
@@ -36,18 +39,39 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .headers(headers -> headers.frameOptions(frame -> frame.disable()))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            
+            // ✅ authorization rules
             .authorizeHttpRequests(auth -> auth
+                // Public files and assets
+                .requestMatchers(
+                    "/",
+                    "/index.html",
+                    "/*.html",
+                    "/*.ico",
+                    "/*.svg",
+                    "/*.png",
+                    "/*.jpg",
+                    "/*.jpeg",
+                    "/assets/**",
+                    "/static/**",
+                    "/project-images/**",
+                    "/api/profile/resume",
+                    "/api/upload/image"
+                ).permitAll()
+
+                // H2 console
                 .requestMatchers("/h2-console/**").permitAll()
+
+                // Auth APIs
                 .requestMatchers("/api/auth/login").permitAll()
-                // Public GET endpoints
-                .requestMatchers(HttpMethod.GET, "/api/skills").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/projects").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/profile").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/profile/1").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/profile/resume").permitAll()
-                // Public POST contact
-                .requestMatchers(HttpMethod.POST, "/api/contact").permitAll()
-                // All other endpoints require authentication
+
+                // Public GET APIs
+                .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
+
+                // Allow OPTIONS preflight requests globally
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
+                // Everything else secured (POST/PUT/DELETE)
                 .anyRequest().authenticated()
             )
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
@@ -58,12 +82,24 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173", "http://localhost:5174", "http://localhost:3000"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Cache-Control"));
+        
+        // Parse and set dynamic allowed origins
+        if (allowedOrigins != null && !allowedOrigins.trim().isEmpty()) {
+            configuration.setAllowedOrigins(Arrays.asList(allowedOrigins.split(",")));
+        } else {
+            configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173", "http://localhost:5174", "http://localhost:3000"));
+        }
+        
+        configuration.setAllowedMethods(Arrays.asList(
+            "GET", "POST", "PUT", "DELETE", "OPTIONS"
+        ));
+        configuration.setAllowedHeaders(Arrays.asList(
+            "Authorization", "Content-Type", "Cache-Control"
+        ));
         configuration.setAllowCredentials(true);
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
-}
+}

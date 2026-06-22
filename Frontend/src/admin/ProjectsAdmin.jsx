@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { getProjects, addProject, updateProject, deleteProject } from "../services/projectService";
+import api from "../services/api";
 import "./admin.css";
 
 function ProjectsAdmin() {
@@ -35,6 +36,30 @@ function ProjectsAdmin() {
       ...form,
       [e.target.name]: e.target.value
     });
+  };
+
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    const formData = new FormData();
+    formData.append("file", file);
+    
+    try {
+      setMsg("Uploading image...");
+      const res = await api.post("/api/upload/image", formData, {
+        headers: { "Content-Type": "multipart/form-data" }
+      });
+      if (res.data && res.data.url) {
+        setForm(prev => ({ ...prev, image: res.data.url }));
+        setMsg("Image uploaded successfully!");
+      } else {
+        setMsg("Upload returned empty response.");
+      }
+    } catch (err) {
+      console.error(err);
+      setMsg("Image upload failed.");
+    }
   };
 
   const handleEdit = (project) => {
@@ -155,7 +180,14 @@ function ProjectsAdmin() {
           </div>
 
           <div className="form-group">
-            <label>Image Filename / URL</label>
+            <label>Upload Project Image File</label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageUpload}
+              style={{ marginBottom: "8px" }}
+            />
+            <label>Or Image Filename / URL</label>
             <input
               type="text"
               name="image"

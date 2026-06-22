@@ -2,7 +2,6 @@ package com.sri.portfolio.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.sri.portfolio.model.Project;
@@ -17,20 +16,16 @@ public class ProjectService {
         this.repository = repository;
     }
 
-    public List<Project> getProjects() {
+    public List<Project> getAll() {
         return repository.findAll();
     }
 
-    public Project addProject(Project project) {
+    public Project add(Project project) {
         return repository.save(project);
     }
 
-    public Project updateProject(Long id,
-                                 Project project) {
-
-        Project existing =
-                repository.findById(id).orElse(null);
-
+    public Project updateProject(Long id, Project project) {
+        Project existing = repository.findById(id).orElse(null);
         if (existing == null) {
             return null;
         }
@@ -44,22 +39,7 @@ public class ProjectService {
         return repository.save(existing);
     }
 
-    public void deleteProject(Long id) {
-        repository.deleteById(id);
-    }
-
-    @Autowired
-    private ProjectRepository repo;
-
-    public List<Project> getAll() {
-        return repo.findAll();
-    }
-
-    public Project add(Project project) {
-        return repo.save(project);
-    }
-
     public void delete(Long id) {
-        repo.deleteById(id);
+        repository.deleteById(id);
     }
 }

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../services/api";
 import "./admin.css";
 
 function Login() {
@@ -23,7 +23,7 @@ function Login() {
     setLoading(true);
 
     try {
-      const response = await axios.post("http://localhost:9002/api/auth/login", {
+      const response = await api.post("/api/auth/login", {
         username,
         password,
       });

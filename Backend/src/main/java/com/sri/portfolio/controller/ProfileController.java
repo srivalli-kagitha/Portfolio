@@ -10,7 +10,6 @@ import com.sri.portfolio.service.ProfileService;
 
 @RestController
 @RequestMapping("/api/profile")
-@CrossOrigin(origins = "*")
 public class ProfileController {
 
     private final ProfileService service;

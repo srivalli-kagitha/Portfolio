@@ -13,9 +13,12 @@ import io.jsonwebtoken.security.Keys;
 @Component
 public class JwtUtil {
 
-    private final String secretString = "sriPortfolioSecureSecretKeyForJWTAuthentication2026";
-    private final SecretKey key = Keys.hmacShaKeyFor(secretString.getBytes(StandardCharsets.UTF_8));
+    private final SecretKey key;
     private final long expirationMs = 86400000; // 24 hours
+
+    public JwtUtil(@org.springframework.beans.factory.annotation.Value("${jwt.secret}") String secretString) {
+        this.key = Keys.hmacShaKeyFor(secretString.getBytes(StandardCharsets.UTF_8));
+    }
 
     public String generateToken(String username) {
         return Jwts.builder()

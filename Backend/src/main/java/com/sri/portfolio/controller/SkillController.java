@@ -9,7 +9,6 @@ import com.sri.portfolio.service.SkillService;
 
 @RestController
 @RequestMapping("/api/skills")
-@CrossOrigin(origins = "*")
 public class SkillController {
 
     private final SkillService service;

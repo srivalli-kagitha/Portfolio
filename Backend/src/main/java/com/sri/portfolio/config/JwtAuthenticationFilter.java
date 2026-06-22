@@ -30,32 +30,62 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
 
+        String path = request.getRequestURI();
+
+        // Normalize null-safe path
+        if (path == null) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        // ✅ Skip JWT for frontend + static resources
+        if (path.equals("/") ||
+                path.equals("/index.html") ||
+                path.equals("/favicon.ico") ||
+                path.equals("/profile.jpg") ||
+                path.startsWith("/assets") ||
+                path.equals("/resume.pdf") ||
+path.startsWith("/files") ||
+                path.startsWith("/static") ||
+                path.startsWith("/project-images") ||
+                path.endsWith(".js") ||
+                path.endsWith(".css") ||
+                path.endsWith(".svg") ||
+                path.endsWith(".png") ||
+                path.endsWith(".jpg") ||
+                path.startsWith("/h2-console")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         final String authHeader = request.getHeader("Authorization");
-        final String jwt;
-        final String username;
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        jwt = authHeader.substring(7);
         try {
-            username = jwtUtil.extractUsername(jwt);
+            String jwt = authHeader.substring(7);
+            String username = jwtUtil.extractUsername(jwt);
 
-            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                if (jwtUtil.validateToken(jwt, username)) {
-                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                            username,
-                            null,
-                            Collections.singletonList(new SimpleGrantedAuthority("ROLE_ADMIN"))
-                    );
-                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    SecurityContextHolder.getContext().setAuthentication(authToken);
-                }
+            if (username != null &&
+                    SecurityContextHolder.getContext().getAuthentication() == null &&
+                    jwtUtil.validateToken(jwt, username)) {
+
+                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                        username,
+                        null,
+                        Collections.singletonList(new SimpleGrantedAuthority("ROLE_ADMIN")));
+
+                authToken.setDetails(
+                        new WebAuthenticationDetailsSource().buildDetails(request));
+
+                SecurityContextHolder.getContext().setAuthentication(authToken);
             }
+
         } catch (Exception e) {
-            // Log warning or exception if token is invalid or expired
+            // ignore invalid token
         }
 
         filterChain.doFilter(request, response);

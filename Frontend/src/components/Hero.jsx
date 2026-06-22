@@ -64,7 +64,7 @@ function Hero() {
           </button>
 
           <a
-            href="http://localhost:9002/api/profile/resume"
+            href={`${import.meta.env.VITE_API_BASE_URL || "http://localhost:9002"}/api/profile/resume`}
             target="_blank"
             rel="noreferrer"
             className="secondaryBtn"
@@ -79,7 +79,7 @@ function Hero() {
   <div className="hero-image-wrap">
     <div className="image-card">
       <img
-        src={profile.image?.startsWith("http") ? profile.image : `/${profile.image}`}
+        src={profile.image?.startsWith("http") ? profile.image : (profile.image?.startsWith("project-images") ? `${import.meta.env.VITE_API_BASE_URL || "http://localhost:9002"}/${profile.image}` : `/${profile.image}`)}
         alt="profile"
         className="profile-image"
       />
