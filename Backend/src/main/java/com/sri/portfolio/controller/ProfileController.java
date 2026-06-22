@@ -4,14 +4,24 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.sri.portfolio.model.Profile;
 import com.sri.portfolio.service.ProfileService;
+
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 
 @RestController
 @RequestMapping("/api/profile")
 public class ProfileController {
 
+    @Autowired
+private Cloudinary cloudinary;
     private final ProfileService service;
 
     public ProfileController(ProfileService service) {
@@ -46,26 +56,67 @@ public class ProfileController {
     }
 
     @PostMapping("/resume")
-    public ResponseEntity<?> uploadResume(
-            @RequestParam("file") org.springframework.web.multipart.MultipartFile file) {
-        try {
-            service.updateResume(1L, file.getBytes());
-            return ResponseEntity.ok("Resume uploaded successfully");
-        } catch (Exception e) {
-            return ResponseEntity.status(org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Failed to upload resume: " + e.getMessage());
-        }
+public ResponseEntity<?> uploadResume(
+        @RequestParam("file") MultipartFile file) {
+
+    try {
+
+        Map<?, ?> uploadResult =
+                cloudinary.uploader()
+                           .upload(
+                               file.getBytes(),
+                               ObjectUtils.asMap(
+                                   "resource_type",
+                                   "raw"
+                               )
+                           );
+
+        String resumeUrl =
+                uploadResult.get("secure_url")
+                            .toString();
+
+        service.updateResumeUrl(
+                1L,
+                resumeUrl
+        );
+
+        return ResponseEntity.ok(
+                Map.of(
+                    "url",
+                    resumeUrl
+                )
+        );
+
+    } catch (Exception e) {
+
+        return ResponseEntity
+                .internalServerError()
+                .body(
+                    "Failed to upload resume: "
+                    + e.getMessage()
+                );
     }
+}
 
     @GetMapping("/resume")
-    public ResponseEntity<byte[]> downloadResume() {
-        Profile profile = service.getProfile(1L);
-        if (profile == null || profile.getResumePdf() == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok()
-                .header(org.springframework.http.HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"resume.pdf\"")
-                .contentType(org.springframework.http.MediaType.APPLICATION_PDF)
-                .body(profile.getResumePdf());
+public ResponseEntity<?> downloadResume() {
+
+    Profile profile =
+            service.getProfile(1L);
+
+    if (profile == null ||
+        profile.getResumeUrl() == null) {
+
+        return ResponseEntity
+                .notFound()
+                .build();
     }
+
+    return ResponseEntity.ok(
+            Map.of(
+                "url",
+                profile.getResumeUrl()
+            )
+    );
+}
 }

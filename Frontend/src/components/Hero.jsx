@@ -64,11 +64,16 @@ function Hero() {
           </button>
 
           <a
-            href={`${import.meta.env.VITE_API_BASE_URL || "http://localhost:9002"}/api/profile/resume`}
+            href={profile.resumeUrl}
             target="_blank"
             rel="noreferrer"
             className="secondaryBtn"
-            style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", textDecoration: "none" }}
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              textDecoration: "none"
+            }}
           >
             Download Resume
           </a>
@@ -76,26 +81,26 @@ function Hero() {
       </div>
 
       <div className="hero-right">
-  <div className="hero-image-wrap">
-    <div className="image-card">
-      <img
-        src={profile.image?.startsWith("http") ? profile.image : (profile.image?.startsWith("project-images") ? `${import.meta.env.VITE_API_BASE_URL || "http://localhost:9002"}/${profile.image}` : `/${profile.image}`)}
-        alt="profile"
-        className="profile-image"
-      />
-    </div>
-  </div>
+        <div className="hero-image-wrap">
+          <div className="image-card">
+            <img
+              src={profile.image?.startsWith("http") ? profile.image : (profile.image?.startsWith("project-images") ? `${import.meta.env.VITE_API_BASE_URL || "http://localhost:9002"}/${profile.image}` : `/${profile.image}`)}
+              alt="profile"
+              className="profile-image"
+            />
+          </div>
+        </div>
 
-  <div className="social-icons">
-    <a href="https://github.com/srivalli-kagitha" target="_blank" rel="noreferrer">
-      <FaGithub />
-    </a>
+        <div className="social-icons">
+          <a href="https://github.com/srivalli-kagitha" target="_blank" rel="noreferrer">
+            <FaGithub />
+          </a>
 
-    <a href="https://linkedin.com/in/srivallikagitha01" target="_blank" rel="noreferrer">
-      <FaLinkedin />
-    </a>
-  </div>
-</div>
+          <a href="https://linkedin.com/in/srivallikagitha01" target="_blank" rel="noreferrer">
+            <FaLinkedin />
+          </a>
+        </div>
+      </div>
     </section>
   );
 }

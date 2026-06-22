@@ -28,8 +28,7 @@ public class ProfileService {
         return repository.save(profile);
     }
 
-    public Profile updateProfile(Long id,
-                                 Profile profile) {
+    public Profile updateProfile(Long id, Profile profile) {
 
         Profile existing =
                 repository.findById(id).orElse(null);
@@ -46,11 +45,16 @@ public class ProfileService {
         return repository.save(existing);
     }
 
-    public void updateResume(Long id, byte[] data) {
-        Profile existing = repository.findById(id).orElse(null);
-        if (existing != null) {
-            existing.setResumePdf(data);
-            repository.save(existing);
+    public Profile updateResumeUrl(Long id, String resumeUrl) {
+
+        Profile profile =
+                repository.findById(id).orElse(null);
+
+        if (profile == null) {
+            return null;
         }
+
+        profile.setResumeUrl(resumeUrl);
+        return repository.save(profile);
     }
 }

@@ -1,61 +1,65 @@
 package com.sri.portfolio.controller;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.util.UUID;
+import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 
 @RestController
 @RequestMapping("/api/upload")
 public class UploadController {
 
-    @Value("${file.upload-dir:uploads}")
-    private String uploadDir;
+    @Autowired
+    private Cloudinary cloudinary;
 
     @PostMapping("/image")
-    public ResponseEntity<?> uploadImage(@RequestParam("file") MultipartFile file) {
-        if (file.isEmpty()) {
-            return ResponseEntity.badRequest().body("File is empty");
-        }
-        try {
-            Path uploadPath = Paths.get(uploadDir);
-            if (!Files.exists(uploadPath)) {
-                Files.createDirectories(uploadPath);
-            }
+    public ResponseEntity<?> uploadImage(
+            @RequestParam("file") MultipartFile file) {
 
-            String originalFilename = file.getOriginalFilename();
-            String extension = "";
-            if (originalFilename != null && originalFilename.contains(".")) {
-                extension = originalFilename.substring(originalFilename.lastIndexOf("."));
-            }
-            
-            // Generate a safe unique filename using UUID
-            String filename = UUID.randomUUID().toString() + extension;
-            Path filePath = uploadPath.resolve(filename);
-            
-            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-            
-            // Access URL format mapping under WebMvcConfig
-            String fileUrl = "project-images/" + filename;
-            
-            return ResponseEntity.ok().body(new UploadResponse(fileUrl));
+        if (file.isEmpty()) {
+            return ResponseEntity
+                    .badRequest()
+                    .body("File is empty");
+        }
+
+        try {
+
+            Map<?, ?> uploadResult =
+                    cloudinary.uploader()
+                               .upload(
+                                   file.getBytes(),
+                                   ObjectUtils.emptyMap()
+                               );
+
+            String fileUrl =
+                    uploadResult.get("secure_url")
+                                .toString();
+
+            return ResponseEntity.ok(
+                    new UploadResponse(fileUrl));
+
         } catch (IOException e) {
-            return ResponseEntity.internalServerError().body("Failed to store file: " + e.getMessage());
+
+            return ResponseEntity
+                    .internalServerError()
+                    .body("Upload failed: " + e.getMessage());
         }
     }
 
     private static class UploadResponse {
+
         private final String url;
+
         public UploadResponse(String url) {
             this.url = url;
         }
+
         public String getUrl() {
             return url;
         }
