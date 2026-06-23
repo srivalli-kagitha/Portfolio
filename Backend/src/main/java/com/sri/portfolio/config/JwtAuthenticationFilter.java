@@ -53,7 +53,9 @@ path.startsWith("/files") ||
                 path.endsWith(".svg") ||
                 path.endsWith(".png") ||
                 path.endsWith(".jpg") ||
-                path.startsWith("/h2-console")) {
+                path.startsWith("/h2-console") ||
+                path.equals("/admin") ||
+                path.startsWith("/dashboard")) {
             filterChain.doFilter(request, response);
             return;
         }

@@ -56,7 +56,10 @@ public class SecurityConfig {
                     "/static/**",
                     "/project-images/**",
                     "/api/profile/resume",
-                    "/api/upload/image"
+                    "/api/upload/image",
+                    "/admin",
+                    "/dashboard",
+                    "/dashboard/**"
                 ).permitAll()
 
                 // H2 console

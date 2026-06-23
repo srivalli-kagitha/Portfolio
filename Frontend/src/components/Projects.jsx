@@ -32,7 +32,7 @@ function Projects() {
               src={project.image?.startsWith("http") || project.image?.startsWith("data:") 
                 ? project.image 
                 : (project.image?.startsWith("project-images") 
-                    ? `${import.meta.env.VITE_API_BASE_URL || "http://localhost:9002"}/${project.image}` 
+                    ? `${import.meta.env.VITE_API_BASE_URL || ""}/${project.image}` 
                     : `/${project.image || 'placeholder.jpg'}`)}
               alt={project.title}
               className="project-image"
