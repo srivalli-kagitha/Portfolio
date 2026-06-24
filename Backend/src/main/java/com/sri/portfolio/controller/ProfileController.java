@@ -56,67 +56,91 @@ private Cloudinary cloudinary;
     }
 
     @PostMapping("/resume")
-public ResponseEntity<?> uploadResume(
-        @RequestParam("file") MultipartFile file) {
+    public ResponseEntity<?> uploadResume(
+            @RequestParam("file") MultipartFile file) {
 
-    try {
+        try {
+            String originalFilename = file.getOriginalFilename();
+            String extension = ".pdf";
+            if (originalFilename != null && originalFilename.contains(".")) {
+                extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+            }
+            String publicId = "resume_" + System.currentTimeMillis() + extension;
 
-        Map<?, ?> uploadResult =
-                cloudinary.uploader()
-                           .upload(
-                               file.getBytes(),
-                               ObjectUtils.asMap(
-                                   "resource_type",
-                                   "raw"
-                               )
-                           );
+            Map<?, ?> uploadResult =
+                    cloudinary.uploader()
+                               .upload(
+                                   file.getBytes(),
+                                   ObjectUtils.asMap(
+                                       "resource_type", "raw",
+                                       "public_id", publicId
+                                   )
+                               );
 
-        String resumeUrl =
-                uploadResult.get("secure_url")
-                            .toString();
+            String resumeUrl =
+                    uploadResult.get("secure_url")
+                                .toString();
 
-        service.updateResumeUrl(
-                1L,
-                resumeUrl
-        );
-
-        return ResponseEntity.ok(
-                Map.of(
-                    "url",
+            service.updateResumeUrl(
+                    1L,
                     resumeUrl
-                )
-        );
+            );
 
-    } catch (Exception e) {
+            return ResponseEntity.ok(
+                    Map.of(
+                        "url",
+                        resumeUrl
+                    )
+            );
 
-        return ResponseEntity
-                .internalServerError()
-                .body(
-                    "Failed to upload resume: "
-                    + e.getMessage()
-                );
+        } catch (Exception e) {
+
+            return ResponseEntity
+                    .internalServerError()
+                    .body(
+                        "Failed to upload resume: "
+                        + e.getMessage()
+                    );
+        }
     }
-}
 
     @GetMapping("/resume")
-public ResponseEntity<?> downloadResume() {
+    public ResponseEntity<?> downloadResume() {
 
-    Profile profile =
-            service.getProfile(1L);
+        Profile profile =
+                service.getProfile(1L);
 
-    if (profile == null ||
-        profile.getResumeUrl() == null) {
+        if (profile == null ||
+            profile.getResumeUrl() == null ||
+            profile.getResumeUrl().isEmpty()) {
 
-        return ResponseEntity
-                .notFound()
-                .build();
+            return ResponseEntity
+                    .notFound()
+                    .build();
+        }
+
+        try {
+            java.net.http.HttpClient client = java.net.http.HttpClient.newHttpClient();
+            java.net.http.HttpRequest httpRequest = java.net.http.HttpRequest.newBuilder()
+                    .uri(java.net.URI.create(profile.getResumeUrl()))
+                    .GET()
+                    .build();
+            java.net.http.HttpResponse<byte[]> httpResponse = client.send(
+                    httpRequest,
+                    java.net.http.HttpResponse.BodyHandlers.ofByteArray()
+            );
+
+            return ResponseEntity.ok()
+                    .contentType(org.springframework.http.MediaType.APPLICATION_PDF)
+                    .header(org.springframework.http.HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"Srivalli_Kagitha_Resume.pdf\"")
+                    .body(httpResponse.body());
+
+        } catch (Exception e) {
+            // Fallback redirect if streaming fails
+            return ResponseEntity
+                    .status(org.springframework.http.HttpStatus.FOUND)
+                    .location(java.net.URI.create(profile.getResumeUrl()))
+                    .build();
+        }
     }
-
-    return ResponseEntity.ok(
-            Map.of(
-                "url",
-                profile.getResumeUrl()
-            )
-    );
-}
 }

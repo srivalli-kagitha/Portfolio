@@ -64,7 +64,7 @@ function Hero() {
           </button>
 
           <a
-            href={profile.resumeUrl}
+            href={`${import.meta.env.VITE_API_BASE_URL || ""}/api/profile/resume`}
             target="_blank"
             rel="noreferrer"
             className="secondaryBtn"
