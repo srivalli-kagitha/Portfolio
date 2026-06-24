@@ -31,3 +31,8 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Local data and uploads
+data/
+uploads/
+*.mv.db
