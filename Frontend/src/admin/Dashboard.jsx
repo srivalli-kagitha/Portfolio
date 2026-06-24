@@ -88,18 +88,18 @@ function Dashboard() {
   const handleResumeUpload = async (e) => {
     e.preventDefault();
     if (!resumeFile) {
-      setResumeMsg("Please select a PDF file first");
+      setResumeMsg("Please select a resume file first");
       return;
     }
     setUploading(true);
     setResumeMsg("");
     try {
       await uploadResume(resumeFile);
-      setResumeMsg("Resume PDF uploaded successfully!");
+      setResumeMsg("Resume uploaded successfully!");
       setResumeFile(null);
     } catch (err) {
       console.error(err);
-      setResumeMsg("Failed to upload resume PDF.");
+      setResumeMsg("Failed to upload resume.");
     } finally {
       setUploading(false);
     }
@@ -178,24 +178,24 @@ function Dashboard() {
 
         {/* Resume PDF Form */}
         <div className="admin-form resume-uploader-card">
-          <h3>Resume PDF Manager</h3>
-          <p className="subtitle">Upload a new resume PDF which visitors can download.</p>
+          <h3>Resume File Manager</h3>
+          <p className="subtitle">Upload a new resume file (PDF, DOC, DOCX, TXT) which visitors can download.</p>
 
           {resumeMsg && <div className="toast-message">{resumeMsg}</div>}
 
           <form onSubmit={handleResumeUpload}>
             <div className="form-group">
-              <label>Select PDF Document</label>
+              <label>Select Resume Document</label>
               <input
                 type="file"
-                accept="application/pdf"
+                accept=".pdf,.doc,.docx,.rtf,.txt"
                 onChange={(e) => setResumeFile(e.target.files[0])}
                 required
               />
             </div>
 
             <button type="submit" className="action-btn neon-btn" disabled={uploading}>
-              {uploading ? "Uploading PDF..." : "Upload New Resume PDF"}
+              {uploading ? "Uploading File..." : "Upload New Resume File"}
             </button>
           </form>
         </div>

@@ -119,10 +119,20 @@ private Cloudinary cloudinary;
                     .build();
         }
 
+        String url = profile.getResumeUrl();
+        String extension = ".pdf"; // default fallback
+        int lastDot = url.lastIndexOf('.');
+        if (lastDot > 0 && url.indexOf('/', lastDot) == -1) {
+            extension = url.substring(lastDot);
+        }
+
+        String filename = "Srivalli_Kagitha_Resume" + extension;
+        String mimeType = getMimeType(extension);
+
         try {
             java.net.http.HttpClient client = java.net.http.HttpClient.newHttpClient();
             java.net.http.HttpRequest httpRequest = java.net.http.HttpRequest.newBuilder()
-                    .uri(java.net.URI.create(profile.getResumeUrl()))
+                    .uri(java.net.URI.create(url))
                     .GET()
                     .build();
             java.net.http.HttpResponse<byte[]> httpResponse = client.send(
@@ -131,16 +141,41 @@ private Cloudinary cloudinary;
             );
 
             return ResponseEntity.ok()
-                    .contentType(org.springframework.http.MediaType.APPLICATION_PDF)
-                    .header(org.springframework.http.HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"Srivalli_Kagitha_Resume.pdf\"")
+                    .contentType(org.springframework.http.MediaType.parseMediaType(mimeType))
+                    .header(org.springframework.http.HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
                     .body(httpResponse.body());
 
         } catch (Exception e) {
             // Fallback redirect if streaming fails
             return ResponseEntity
                     .status(org.springframework.http.HttpStatus.FOUND)
-                    .location(java.net.URI.create(profile.getResumeUrl()))
+                    .location(java.net.URI.create(url))
                     .build();
+        }
+    }
+
+    private String getMimeType(String extension) {
+        if (extension == null) {
+            return "application/octet-stream";
+        }
+        switch (extension.toLowerCase()) {
+            case ".pdf":
+                return "application/pdf";
+            case ".doc":
+                return "application/msword";
+            case ".docx":
+                return "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+            case ".txt":
+                return "text/plain";
+            case ".rtf":
+                return "application/rtf";
+            case ".png":
+                return "image/png";
+            case ".jpg":
+            case ".jpeg":
+                return "image/jpeg";
+            default:
+                return "application/octet-stream";
         }
     }
 }
